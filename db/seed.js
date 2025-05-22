@@ -1,8 +1,8 @@
 import db from "#db/client";
 import { createEmployee } from "./queries/employees";
 
-await db.connect();
-await seedEmployees();
+// await db.connect();
+// await seedEmployees();
 
 console.log("🌱 Database seeded.");
 
