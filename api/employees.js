@@ -7,9 +7,13 @@ import { getEmployees, createEmployee, getEmployee, deleteEmployee, updateEmploy
 // GET
 
 router.route("/").get(async (req, res)=>{
+    res.send("Welcome to the Fullstack Employees API.")
+})
+
+router.route("/").get(async (req, res)=>{
     const employees = await getEmployees();
     res.send(employees)
-    return ("Welcome to the Fullstack Employees API.")
+    
 
     
 })
@@ -34,7 +38,7 @@ router.route("/").post(async (req, res)=>{
 
 router.route("/:id").get(async (req, res)=>{
     const {id} = req.params
-    if(id < 0) {
+    if( !Number.isInteger(id) && id < 0) {
         return res.status(400).send("Id must be a positive number")
     }
     const employee = await getEmployee(id)
@@ -47,7 +51,7 @@ router.route("/:id").get(async (req, res)=>{
 // Delete
 
 router.route("/:id").delete(async (req, res)=> {
-    const id = req.params.id
+    const {id} = req.params
     if( !Number.isInteger(id) && id < 0){
         return res.status(400).send({error: "Please send a valid number"})
     }
