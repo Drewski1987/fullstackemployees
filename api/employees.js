@@ -6,15 +6,11 @@ import { getEmployees, createEmployee, getEmployee, deleteEmployee, updateEmploy
 
 // GET
 
-router.route("/").get(async (req, res)=>{
-    res.send("Welcome to the Fullstack Employees API.")
-})
 
 router.route("/").get(async (req, res)=>{
     const employees = await getEmployees();
     res.send(employees)
     
-
     
 })
 
@@ -37,8 +33,8 @@ router.route("/").post(async (req, res)=>{
 // GET employees/:id
 
 router.route("/:id").get(async (req, res)=>{
-    const {id} = req.params
-    if( !Number.isInteger(id) && id < 0) {
+    const id = Number (req.params.id)
+    if( id < 0) {
         return res.status(400).send("Id must be a positive number")
     }
     const employee = await getEmployee(id)
@@ -51,34 +47,40 @@ router.route("/:id").get(async (req, res)=>{
 // Delete
 
 router.route("/:id").delete(async (req, res)=> {
-    const {id} = req.params
-    if( !Number.isInteger(id) && id < 0){
-        return res.status(400).send({error: "Please send a valid number"})
+    const id = Number (req.params.id)
+    if( !Number.isInteger(id) || id < 0){
+        return res.status(400).send({error: "Please send a positive number"})
     }
-    const deletes = await deleteEmployee(id)
-    if(!deletes){
-        res.status(404).send({error: "Employee not found"})
+   
+    const result = await deleteEmployee(id)
+    if(!result){
+        return res.status(404).send({error: "Employee not found"})
     }
-    res.sendStatus(204)
+     res.sendStatus(204)
 })
 
 // PUT
 router.route("/:id").put(async (req, res)=>{
-    const id = req.params.id
+    const id = Number (req.params.id)
+    
     if(!req.body){
-        return res.status(400).send({error: "Please send us info"})
+        return res.status(400).send({error: "Missing req.body"})
     }
     const {name, birthday, salary} = req.body
+
     if(!name || !birthday || !salary) {
         return res.status(400).send({error: "Missing required fields"})
     }
-    if( !Number.isInteger(id) && id < 0){
-    return res.status(400).send({error: "Fix your id"})
-  }
-  const employee = await updateEmployee(id)
-  if(!employee){
-    return res.status(404).send({error: "Employee not found"})
-  }
-  const updated = await updateEmployee({id, name, birthday, salary})
-  res.send(updated)
+
+    if (id < 0) {
+        return res.status(400).send("ID must be a positive number")
+    }
+
+    const employee = await getEmployee(id)
+    if(!employee){
+    return res.status(404).send({error: "Employee does not exist"})
+    }
+
+    const updated = await updateEmployee({name, birthday, salary})
+    res.status(200).send(updated)
 })

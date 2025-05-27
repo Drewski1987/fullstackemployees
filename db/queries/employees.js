@@ -19,8 +19,8 @@ export async function createEmployee({ name, birthday, salary }) {
 export async function getEmployees() {
     const sql = `
     SELECT * 
-    FROM employees
-    `;
+    FROM employees;
+    `
     const {rows: employees} = await db.query(sql);
     return employees
 }
