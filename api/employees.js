@@ -81,6 +81,6 @@ router.route("/:id").put(async (req, res)=>{
     return res.status(404).send({error: "Employee does not exist"})
     }
 
-    const updated = await updateEmployee({name, birthday, salary})
+    const updated = await updateEmployee({ name, birthday, salary})
     res.status(200).send(updated)
 })
